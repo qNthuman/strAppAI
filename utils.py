@@ -1,39 +1,73 @@
 import sqlite3
 from datetime import datetime
 
+# ----------------------------
+# Database Connection Function
+# ----------------------------
 def get_db_connection():
-    conn = sqlite3.connect('study_assistant.db', check_same_thread=False)
-    return conn
+    return sqlite3.connect("study_assistant.db", check_same_thread=False)
 
+
+# ----------------------------
+# Initialize All Tables
+# ----------------------------
 def init_db():
     conn = get_db_connection()
     c = conn.cursor()
-    # Create tables if not exist
-    c.execute('''CREATE TABLE IF NOT EXISTS notes (
-                    id INTEGER PRIMARY KEY,
-                    subject TEXT,
-                    content TEXT,
-                    tags TEXT,
-                    timestamp TEXT)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS daily_logs (
-                    id INTEGER PRIMARY KEY,
-                    subject TEXT,
-                    content TEXT,
-                    hours REAL,
-                    timestamp TEXT)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS dpp_logs (
-                    id INTEGER PRIMARY KEY,
-                    topic TEXT,
-                    score INTEGER,
-                    accuracy REAL,
-                    time_taken TEXT,
-                    timestamp TEXT)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS mock_tests (
-                    id INTEGER PRIMARY KEY,
-                    subject TEXT,
-                    score INTEGER,
-                    accuracy REAL,
-                    time_per_question REAL,
-                    timestamp TEXT)''')
+
+    # Notes Table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subject TEXT NOT NULL,
+            content TEXT NOT NULL,
+            tags TEXT,
+            timestamp TEXT NOT NULL
+        )
+    ''')
+
+    # Daily Logs Table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS daily_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subject TEXT NOT NULL,
+            content TEXT NOT NULL,
+            hours REAL NOT NULL,
+            timestamp TEXT NOT NULL
+        )
+    ''')
+
+    # DPP Logs Table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS dpp_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            topic TEXT NOT NULL,
+            score INTEGER NOT NULL,
+            accuracy REAL NOT NULL,
+            time_taken TEXT NOT NULL,
+            timestamp TEXT NOT NULL
+        )
+    ''')
+
+    # Mock Tests Table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS mock_tests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subject TEXT NOT NULL,
+            score INTEGER NOT NULL,
+            accuracy REAL NOT NULL,
+            time_per_question REAL NOT NULL,
+            timestamp TEXT NOT NULL
+        )
+    ''')
+
     conn.commit()
     conn.close()
+
+
+# ----------------------------
+# Utility to Get Current Timestamp
+# ----------------------------
+def get_timestamp():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
