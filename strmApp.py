@@ -5,7 +5,8 @@ import sqlite3
 from datetime import datetime
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
+
 from langchain.prompts import PromptTemplate
 import json
 
