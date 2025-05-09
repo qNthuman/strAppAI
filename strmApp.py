@@ -3,9 +3,14 @@ import streamlit as st
 from utils import init_db
 import streamlit as st
 
-st.set_page_config(page_title="JEE & IAT AI Assistant", layout="wide")
 
-st.sidebar.title("📚 Study Assistant")
+
+st.set_page_config(
+    page_title="JEE & IAT AI Assistant",  # This appears in the browser tab
+    page_icon="📚",                       # This appears as the favicon
+    layout="wide"
+)
+
 st.sidebar.markdown("Navigate using the sidebar menu.")
 st.sidebar.info("Use the top-left menu to switch pages.")
 
