@@ -23,7 +23,6 @@ Use the sidebar or the navigation menu to get started.
 """)
 
 
-st.set_page_config(page_title="JEE & IAT Study Assistant", layout="wide")
 
 init_db()
 
