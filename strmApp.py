@@ -1,4 +1,4 @@
-```python
+
 import streamlit as st
 from utils import init_db
 
@@ -8,4 +8,4 @@ init_db()
 
 st.title("📘 AI Study Assistant – JEE & IAT")
 st.markdown("Use the sidebar to navigate across Notes, Logs, Dashboard, and Study Plan.")
-```
+
