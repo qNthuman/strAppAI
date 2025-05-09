@@ -1,4 +1,4 @@
-### ✅ `pages/1_📒_Notes.py`
+### ✅ `pages/
 ```python
 import streamlit as st
 from utils import get_db_connection, get_timestamp
