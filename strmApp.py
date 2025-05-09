@@ -1,12 +1,8 @@
-# AI Assistant for JEE & IAT Prep with LangChain + Streamlit UI + SQLite
-
 import streamlit as st
 import sqlite3
 from datetime import datetime
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain_community.chat_models import ChatOpenAI
-
 from langchain.prompts import PromptTemplate
 import json
 
@@ -48,27 +44,24 @@ def init_db():
 init_db()
 
 # ============================
-# LangChain Setup
+# LangChain Setup (Without OpenAI API)
 # ============================
-memory = ConversationBufferMemory()
-llm = ChatOpenAI(temperature=0.5)
-prompt = PromptTemplate(
-    input_variables=["input"],
-    template="""
-    You are a helpful AI assistant supporting a student preparing for JEE and IAT. 
-    Manage these tasks:
-    - Subject-wise notes (create, view, edit, delete, tag by topic/chapter)
-    - Daily logs (topics studied, DPPs done, hours spent)
-    - DPP tracking (topic, score, accuracy, time)
-    - Mock test logs (scores, accuracy, trends)
-    - Respond to requests like: "Show all notes on Electrostatics" or "Log today's Chemistry study session."
-    - Allow deletion, editing, and retrieval of entries.
+memory = ConversationBufferMemory(memory_key="chat_history")
 
-    Input: {input}
-    Output:
-    """
-)
-chain = ConversationChain(llm=llm, memory=memory, prompt=prompt)
+# Define custom logic-based responses instead of relying on OpenAI API
+def generate_response(query):
+    # Simple rules to respond based on input query (can be expanded with more complex rules)
+    query = query.lower()
+    if "note" in query:
+        return "You can view or create notes for Physics, Chemistry, Math, and Biology."
+    elif "dpp" in query:
+        return "You can add DPP logs, including topics, scores, and accuracy."
+    elif "mock test" in query:
+        return "You can log mock test scores with accuracy, time per question, and subject."
+    elif "logs" in query:
+        return "You can view and edit daily logs, including hours spent and topics studied."
+    else:
+        return "I'm sorry, I couldn't understand your request. Please ask something about notes, logs, DPP, or mock tests."
 
 # ============================
 # Streamlit UI
@@ -135,7 +128,7 @@ if menu == "Mock Test Log":
 if menu == "Ask AI":
     query = st.text_input("Ask the Assistant anything about your study logs")
     if st.button("Submit") and query:
-        result = chain.run(input=query)
+        result = generate_response(query)  # Use custom logic to generate response
         st.write(result)
 
 # ------------------ Export ------------------
