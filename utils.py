@@ -30,30 +30,5 @@ def init_db():
 
 def get_timestamp():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-```
 
----
 
-### ✅ `pages/1_📒_Notes.py`
-```python
-import streamlit as st
-from utils import get_db_connection, get_timestamp
-
-st.title("📒 Notes")
-
-conn = get_db_connection()
-c = conn.cursor()
-
-subject = st.selectbox("Subject", ["Physics", "Chemistry", "Math", "Biology"])
-content = st.text_area("Note Content")
-tags = st.text_input("Tags (comma-separated)")
-if st.button("Save Note"):
-    c.execute("INSERT INTO notes (subject, content, tags, timestamp) VALUES (?, ?, ?, ?)",
-              (subject, content, tags, get_timestamp()))
-    conn.commit()
-    st.success("Note saved successfully!")
-
-st.markdown("---")
-c.execute("SELECT * FROM notes")
-for row in c.fetchall():
-    st.markdown(f"**{row[1]}** — {row[2]}\n_Tags_: {row[3]}\n_{row[4]}")
