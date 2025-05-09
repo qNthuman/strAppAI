@@ -3,7 +3,8 @@ import sqlite3
 from datetime import datetime
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate
+import pandas as pd
+import numpy as np
 import json
 
 # ============================
@@ -69,8 +70,47 @@ def generate_response(query):
 st.title("📘 AI Study Assistant – JEE & IAT")
 
 menu = st.sidebar.selectbox("Choose Action", [
-    "Create Note", "View Notes", "Daily Log", "DPP Log", "Mock Test Log", "Ask AI", "Export Logs"
+    "Create Note", "View Notes", "Daily Log", "DPP Log", "Mock Test Log", "Ask AI", "Export Logs", "DPP Dashboard"
 ])
+
+# ------------------ DPP Dashboard ------------------
+if menu == "DPP Dashboard":
+    st.header("DPP Logs Dashboard")
+
+    # Fetch DPP data from the database
+    c.execute("SELECT * FROM dpp_logs")
+    dpp_data = c.fetchall()
+
+    # Convert the data into a pandas DataFrame
+    if dpp_data:
+        df = pd.DataFrame(dpp_data, columns=["ID", "Topic", "Score", "Accuracy", "Time Taken", "Timestamp"])
+
+        # Convert 'Timestamp' to datetime format
+        df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+
+        # Display the DataFrame in Streamlit
+        st.dataframe(df)
+
+        # Perform some basic analysis using NumPy/Pandas
+        st.subheader("Basic Statistics")
+
+        # Calculate mean score and accuracy
+        mean_score = np.mean(df["Score"])
+        mean_accuracy = np.mean(df["Accuracy"])
+        avg_time = np.mean(df["Time Taken"].apply(lambda x: int(x.split("m")[0])*60 + int(x.split("m")[1].split("s")[0])))
+
+        st.write(f"Average Score: {mean_score:.2f}")
+        st.write(f"Average Accuracy: {mean_accuracy:.2f}%")
+        st.write(f"Average Time Taken per DPP: {avg_time // 60}m {avg_time % 60}s")
+
+        # Add more analysis as needed
+        # For example, number of DPP logs by topic
+        st.subheader("DPP Logs by Topic")
+        topic_counts = df["Topic"].value_counts()
+        st.bar_chart(topic_counts)
+
+    else:
+        st.write("No DPP logs found.")
 
 # ------------------ Notes ------------------
 if menu == "Create Note":
